@@ -1,0 +1,8 @@
+
+spring:
+  jpa:
+    hibernate:
+      # Do not overwrite the current DB, only validate against it
+      dll-auto: validate
+    show-sql: false
+
