@@ -1,0 +1,30 @@
+overlay: 1.0
+info:
+  title: Documentation of the message-manager app REST API.
+  version: 1.0.0
+
+actions:
+  - target: "$.paths['/api/v1/auth/login'].post"
+    update:
+      summary: Log in a user.
+      description: |
+        Logs in a user using a supported authentication method. On success,
+        the response contains an id for the authenticated user, as well as a
+        new JSON Web Token that can be used to authenticate future requests.
+      responses:
+        '200':
+          description: User was logged in.
+        '403':
+          description: Faulty user credentials.
+  - target: "$.paths['/api/v1/auth/whoami'].get"
+    update:
+      sumary: Get information about the authenticated user.
+      description: |
+        Authenticated endpoint that returns the ID and miscellaneous
+        information about the authenticated user.
+      responses:
+        '200':
+          description: Returns identifying information about the user.
+        '401':
+          description: User was not authenticated.
+

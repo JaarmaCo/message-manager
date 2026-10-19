@@ -1,4 +1,4 @@
-FROM maven:3.9.6-eclipse-temurin-21 AS builder
+FROM maven:3.10.0-eclipse-temurin-25-alpine AS builder
 
 WORKDIR /app
 
@@ -8,7 +8,7 @@ RUN mvn -B -q dependency:resolve dependency:resolve-plugins
 COPY src ./src
 RUN mvn -B -q package -Dmaven.test.skip=true -Dspring.jpa.hibernate.ddl-auto=none
 
-FROM eclipse-temurin:21-jre-alpine
+FROM eclipse-temurin:25-jre-alpine
 
 WORKDIR /app
 

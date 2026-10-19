@@ -31,15 +31,21 @@ spring:
     
     password: ${SPRING_DATASOURCE_PASSWORD:testpw}
 
+# Local settings
+app:
+  openapi:
+    base-url: http://localhost:8080
+
 # Enable Swagger docs
 #
 springdoc:
   
   swagger-ui:
-    enabled: true    
+    enabled: true
+    url: /v3/api-docs-overlaid
     path: /swagger-ui.html
-  
+
   api-docs:
     enabled: true
-    path: /v1/api-docs
+    path: /v3/api-docs
 
