@@ -10,7 +10,7 @@ the project scope has been made deliberately narrow.
 These are the planned features that will be implemented in this project:
 
 1. Password protected user accounts.
-2. P2P communication via a centralized server.
+2. Person to person communication via a centralized server.
 3. Message persistance via a localized PostgreSQL database.
 
 If there is time for it:
