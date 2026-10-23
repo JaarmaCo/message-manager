@@ -1,0 +1,44 @@
+name: PR Conventions
+
+# Forces git conventions on every PR
+#
+# Branch name must be <issue-number>-title (example: 1-test-suite)
+# <issue-number> must point to an existing issue (no unliked PR:s)
+# 
+# Commit messages has have subject:
+#
+#   <fix|feat|docs|test>: commit message <= 80 chars
+#
+# Commits must follow a linear history.
+#
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      REPO: ${{ github.repository }}
+      BRANCH: ${{ github.head_ref }}
+      PR: ${{ github.event.pull_request.number }}
+  steps:
+    - uses: actions/checkout@v4
+      name: Validate that the branch points to an issue.
+      run: bash ./tools/ci/ci-validate-branch
+
+    - uses: actions/checkout@v4
+      name: Validate commit history and message formats.
+      run: bash ./tools/ci/ci-validate-commits
+
+

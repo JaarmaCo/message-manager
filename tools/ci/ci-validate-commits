@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+PATTERN='^(fix|feat|docs|test)-[0-9]+: .{1,80}$'
+
+gh pr view "$PR" \
+    --repo "$REPO" \
+    --json commits \
+    --jq '.commits[] | "\(.oid)\t\(.messageHeadline)"' > commits.tsv
+
+RESULT=0
+
+while IFS=$'\t' read -r OID SUBJECT; do
+
+    [[ -z "$OID" ]] && continue
+
+    if [[ ! "$SUBJECT" =~ $PATTERN ]]; then
+        
+        echo "[ERROR:commit:subject] - Subject '$SUBJECT' does not match the expected pattern '$PATTERN'."
+
+        RESULT=1
+        continue
+    fi
+    
+    COMMIT_PARENT_COUNT=$(gh api "repos/$REPO/commits/$OID" --jq '.parents | length')
+    if [[ $COMMIT_PARENT_COUNT -gt 1 ]]; then
+        
+        echo "[ERROR:commit:history] - Commits must follow a linear history. \
+            Commit '$OID' has $COMMIT_PARENT_COUNT parents (nonlinear)."
+        
+        RESULT=1
+        continue
+    fi
+
+    echo "[OK] - $SUBJECT"
+
+done < commits.tsv
+
+exit $RESULT
+

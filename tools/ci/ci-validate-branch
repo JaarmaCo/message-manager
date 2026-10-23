@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+echo "Checking branch name: $BRANCH"
+if [[ ! "$BRANCH" ~= ^([0-9]+)-[a-zA-Z0-9_\-]+ ]]; then
+  echo "[ERROR:branch:name] - '${BRANCH}' is not a valid branch name. Must be <issue-number>-title."
+  exit 1
+fi
+ISSUE_NUMBER="${BASH_REMATCH[1]}"
+if ! gh api "repos/$REPO/issues/$ISSUE_NUMBER" --jq '.number' >/dev/null 2>&1; then
+  echo "[ERROR:branch:link] - Issue not found. Name '${BRANCH}' indicates it must match an existing issue numbered ${ISSUE_NUMBER}."
+  exit 1
+fi
+
+if gh api "repos/$REPO/issues/$ISSUE_NUMBER" --jq '.pull_request.url' 2>/dev/null | grep -q .; then
+  echo "[ERROR:branch:links-pr] - '$ISSUE_NUMBER' points to a PR (not an issue)."
+  exit 1
+fi
+
+echo "[OK] - '$BRANCH' links to a known issue https://github.com/$REPO/issues/$ISSUE_NUMBER"
