@@ -33,12 +33,14 @@ jobs:
       BRANCH: ${{ github.head_ref }}
       PR: ${{ github.event.pull_request.number }}
     steps:
-      - uses: actions/checkout@v4
-        name: Validate that the branch points to an issue.
-        run: bash ./tools/ci/ci-validate-branch
 
       - uses: actions/checkout@v4
-        name: Validate commit history and message formats.
+        name: Checkout the repository (granting access to the CI scripts).
+
+      - name: Validate that the branch points to an issue.
+        run: bash ./tools/ci/ci-validate-branch
+
+      - name: Validate commit history and message formats.
         run: bash ./tools/ci/ci-validate-commits
 
 
