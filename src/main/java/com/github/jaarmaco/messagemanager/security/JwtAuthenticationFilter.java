@@ -80,11 +80,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             return Optional.empty();
         }
 
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (SecurityContextHolder.getContext().getAuthentication() != null) {
             return Optional.empty();
         }
 
-        return Optional.of(authHeaderValue);
+        return Optional.of(authHeaderValue.substring("Bearer ".length()));
     }
 }
 
