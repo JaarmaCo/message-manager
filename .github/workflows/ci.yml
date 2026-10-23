@@ -62,16 +62,7 @@ jobs:
         run: mvn -B -ntp -q dependency:resolve
 
       - name: Security scan (Trivy)
-        run: |
-          docker run --rm \
-            -v "$GITHUB_WORKSPACE:/repo:ro" \
-            -v "$HOME/.m2:/root/.m2:ro" \
-            aquasec/trivy:latest \
-            fs --scanners vuln \
-               --offline-scan \
-               --severity HIGH,CRITICAL \
-               --dependency-tree \
-               --exit-code 1 /repo
+        run: bash ./tools/ci/ci-security
   
   ci-success:
     name: CI success
