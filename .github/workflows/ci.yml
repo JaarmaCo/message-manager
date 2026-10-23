@@ -81,14 +81,14 @@ jobs:
       - security
     runs-on: ubuntu-latest
     steps:
-      name: Verify that all upstream jobs succeeded.
-      run: |
-        UPSTREAM_RESULTS="${{ join(needs.*.result, ' ') }}"
-        echo "Upstream results: $UPSTREAM_RESULTS"
-        for r in $UPSTREAM_RESULTS; do
-          if [[ "$r" != "success" ]]; then
-            echo "[ERROR:ci:child] - One or more CI jobs failed."
-            exit 1
-          fi
-        done
-        echo "All jobs exited successfully"
+      - name: Verify that all upstream jobs succeeded.
+        run: |
+          UPSTREAM_RESULTS="${{ join(needs.*.result, ' ') }}"
+          echo "Upstream results: $UPSTREAM_RESULTS"
+          for r in $UPSTREAM_RESULTS; do
+            if [[ "$r" != "success" ]]; then
+              echo "[ERROR:ci:child] - One or more CI jobs failed."
+              exit 1
+            fi
+          done
+          echo "All jobs exited successfully"
