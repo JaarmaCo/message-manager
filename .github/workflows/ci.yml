@@ -70,7 +70,7 @@ jobs:
             fs --scanners vuln \
                --offline-scan \
                --severity HIGH,CRITICAL \
-               --depenency-tree \
+               --dependency-tree \
                --exit-code 1 /repo
   
   ci-success:
