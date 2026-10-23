@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+if [ -z ${GITHUB_WORKSPACE+x} ]; then
+    echo "[ERROR:usage:environment] - The GITHUB_WORKSPACE environment variable is required in order to run this action."
+    exit 2
+fi
+
+docker run --rm \
+    -v "$GITHUB_WORKSPACE:/repo:ro" \
+    -v "$HOME/.m2:/root/.m2:ro" \
+    aquasec/trivy:latest fs \
+    --scanners vuln \
+    --offline-scan \
+    --severity HIGH,CRITICAL \
+    --dependency-tree \
+    --exit-code 1 /repo
+
