@@ -34,8 +34,7 @@ while IFS=$'\t' read -r OID SUBJECT; do
     COMMIT_PARENT_COUNT=$(gh api "repos/$REPO/commits/$OID" --jq '.parents | length')
     if [[ $COMMIT_PARENT_COUNT -gt 1 ]]; then
         
-        echo "[ERROR:commit:history] - Commits must follow a linear history. \
-            Commit '$OID' has $COMMIT_PARENT_COUNT parents (nonlinear)."
+        echo "[ERROR:commit:history] - Commits must follow a linear history. Commit '$OID' has $COMMIT_PARENT_COUNT parents (nonlinear)."
         
         RESULT=1
         continue
