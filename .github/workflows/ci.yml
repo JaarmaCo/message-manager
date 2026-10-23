@@ -28,7 +28,7 @@ jobs:
       - uses: actions/setup-java@v4
         name: Set up JVM and Maven
         with:
-          distribution: openjdk
+          distribution: temurin
           java-version: 25
           cache: maven
 
@@ -54,7 +54,7 @@ jobs:
       - uses: actions/setup-java@v4
         name: Set up JVM and Maven
         with:
-          distribution: openjdk
+          distribution: temurin
           java-version: 25
           cache: maven
 
