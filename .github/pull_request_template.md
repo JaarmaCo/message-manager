@@ -1,6 +1,6 @@
 <!--
     Branch must be named <ticket-number>-title
-    Commits must be <fix|feat|docs>-<ticket> <= 80 chars
+    Commits must be <fix|feat|docs|test>-<ticket> <= 80 chars
     History must be linear
 -->
 
