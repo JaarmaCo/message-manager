@@ -32,13 +32,13 @@ jobs:
       REPO: ${{ github.repository }}
       BRANCH: ${{ github.head_ref }}
       PR: ${{ github.event.pull_request.number }}
-  steps:
-    - uses: actions/checkout@v4
-      name: Validate that the branch points to an issue.
-      run: bash ./tools/ci/ci-validate-branch
+    steps:
+      - uses: actions/checkout@v4
+        name: Validate that the branch points to an issue.
+        run: bash ./tools/ci/ci-validate-branch
 
-    - uses: actions/checkout@v4
-      name: Validate commit history and message formats.
-      run: bash ./tools/ci/ci-validate-commits
+      - uses: actions/checkout@v4
+        name: Validate commit history and message formats.
+        run: bash ./tools/ci/ci-validate-commits
 
 
