@@ -11,7 +11,7 @@ if [ -z ${REPO+x} ]; then
 fi
 
 echo "Checking branch name: $BRANCH"
-if [[ ! "$BRANCH" =~ '^([0-9]+)-[a-zA-Z0-9_\-]+' ]]; then
+if [[ ! "$BRANCH" =~ '^([0-9]+)-.+' ]]; then
   echo "[ERROR:branch:name] - '${BRANCH}' is not a valid branch name. Must be <issue-number>-title."
   exit 1
 fi
