@@ -1,13 +1,24 @@
 #!/usr/bin/env bash
 
+if [ -z ${BRANCH+x} ]; then
+    echo "[ERROR:usage:environment] - Environment variable BRANCH is required to run this action."
+    exit 2
+fi
+
+if [ -z ${REPO+x} ]; then
+    echo "[ERROR:usage:environment] - Environment variable REPO is required to run this action."
+    exit 2
+fi
+
 echo "Checking branch name: $BRANCH"
-if [[ ! "$BRANCH" ~= ^([0-9]+)-[a-zA-Z0-9_\-]+ ]]; then
+if [[ ! "$BRANCH" =~ '^([0-9]+)-[a-zA-Z0-9_\-]+' ]]; then
   echo "[ERROR:branch:name] - '${BRANCH}' is not a valid branch name. Must be <issue-number>-title."
   exit 1
 fi
 ISSUE_NUMBER="${BASH_REMATCH[1]}"
 if ! gh api "repos/$REPO/issues/$ISSUE_NUMBER" --jq '.number' >/dev/null 2>&1; then
-  echo "[ERROR:branch:link] - Issue not found. Name '${BRANCH}' indicates it must match an existing issue numbered ${ISSUE_NUMBER}."
+  echo "[ERROR:branch:link] - Issue not found. Name '${BRANCH}' indicates it \
+      must match an existing issue numbered ${ISSUE_NUMBER}."
   exit 1
 fi
 

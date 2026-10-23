@@ -1,5 +1,15 @@
 #!/usr/bin/env bash
 
+if [ -z ${PR+x} ]; then
+    echo "[ERROR:usage:environment] - Environment variable PR is required to run this action."
+    exit 2
+fi
+
+if [ -z ${REPO+x} ]; then
+    echo "[ERROR:usage:environment] - Environment variable REPO is required to run this action."
+    exit 2
+fi
+
 PATTERN='^(fix|feat|docs|test)-[0-9]+: .{1,80}$'
 
 gh pr view "$PR" \
