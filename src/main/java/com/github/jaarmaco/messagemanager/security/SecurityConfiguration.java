@@ -147,7 +147,8 @@ public class SecurityConfiguration {
         var problem = ProblemDetail
             .forStatusAndDetail(HttpStatus.UNAUTHORIZED, "This endpoint requires that you submit a valid JWT.");
         problem.setTitle("Authorization required.");
-    
+
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         jsonMapper.writeValue(response.getOutputStream(), problem);
@@ -161,6 +162,7 @@ public class SecurityConfiguration {
             .forStatusAndDetail(HttpStatus.FORBIDDEN, "You are not allowed to access this endpoint.");
         problem.setTitle("Access denied.");
  
+        response.setStatus(HttpStatus.FORBIDDEN.value());
         response.setContentType(MediaType.APPLICATION_PROBLEM_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());
         jsonMapper.writeValue(response.getOutputStream(), problem);

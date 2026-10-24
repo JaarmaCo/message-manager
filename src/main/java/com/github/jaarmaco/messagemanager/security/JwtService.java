@@ -17,7 +17,9 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @EnableConfigurationProperties(JwtConfigurationProperties.class)
 public class JwtService {
@@ -32,21 +34,32 @@ public class JwtService {
 
     @PostConstruct
     private void setUp() {
+
+        log.info("Initializing JWT provider.");
+        try {
         
-        if (!JwtValidation.isValidSecretKey(jwtConfigurationProperties.getSecret())) {
-            throw new RuntimeException("Invalid secret JWT secret key.");
-        }
+            if (!JwtValidation.isValidSecretKey(jwtConfigurationProperties.getSecret())) {
+                throw new RuntimeException("Invalid secret JWT secret key.");
+            }
 
-        if (jwtConfigurationProperties.getExpiration() <= 0) {
-            throw new RuntimeException("Expiration time has to be positive.");
-        }
+            if (jwtConfigurationProperties.getExpiration() <= 0) {
+                throw new RuntimeException("Expiration time has to be positive.");
+            }
 
-        byte[] decodedKey = JwtValidation.decodeSecretKey(jwtConfigurationProperties.getSecret());
-        if (decodedKey.length < KEY_MIN_SIZE_BYTES) {
-            throw new RuntimeException("Decoded key is smaller than the required min length " + KEY_MIN_SIZE_BYTES);
-        }
+            byte[] decodedKey = JwtValidation.decodeSecretKey(jwtConfigurationProperties.getSecret());
+            if (decodedKey.length < KEY_MIN_SIZE_BYTES) {
+                throw new RuntimeException("Decoded key is smaller than the required min length " + KEY_MIN_SIZE_BYTES);
+            }
 
-        secretKey = Keys.hmacShaKeyFor(decodedKey);
+            secretKey = Keys.hmacShaKeyFor(decodedKey);
+
+        } catch (Throwable e) {
+            log.error("Instance of {} thrown in the JWT service initializer routine; {}",
+                    e.getClass().getName(), e.getMessage());
+            log.error("Failed to initialize JWT provider due to previous error.");
+            throw e;
+        }
+        log.info("JWT provider initialized successfully.");
     }
 
     public String generateTokenForUser(UUID userId) {
