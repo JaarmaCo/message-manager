@@ -3,12 +3,7 @@ package com.github.jaarmaco.messagemanager.security;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -38,8 +33,10 @@ import com.github.jaarmaco.messagemanager.properties.ApiConfigurationProperties;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import tools.jackson.databind.json.JsonMapper;
 
+@Slf4j
 @Configuration
 @EnableWebSecurity
 @EnableConfigurationProperties({ CorsConfigurationProperties.class, ApiConfigurationProperties.class })
@@ -61,17 +58,44 @@ public class SecurityConfiguration {
 
     @PostConstruct
     void setUp() {
+    
+        log.info("Initializing security configuration."); 
 
-        List<RequestMatcher> publicEndpintMatchers = new ArrayList<>();
-        for (Endpoint endpoint : apiConfigurationProperties.getPublicEndpoints()) {
+        try {
+            List<RequestMatcher> publicEndpintMatchers = new ArrayList<>();
+            for (Endpoint endpoint : apiConfigurationProperties.getPublicEndpoints()) {
             
-            HttpMethod method = HttpMethod.valueOf(endpoint.getMethod());
-            String path = environment.resolveRequiredPlaceholders(endpoint.getPath());
-            
-            RequestMatcher matcher = PathPatternRequestMatcher.pathPattern(method, path);
-            publicEndpintMatchers.add(matcher);
+                log.info("| Exposing {} {}", endpoint.getMethod(), endpoint.getPath());
+
+                HttpMethod method = HttpMethod.valueOf(endpoint.getMethod());
+                String path = endpoint.getPath();
+
+                try {
+                    path = environment.resolveRequiredPlaceholders(path);
+                } catch (Throwable e) {
+
+                    log.error("  | Failed to expand pattern '{}' with {}", endpoint.getPath(), e.getMessage());
+                    publicEndpintMatchers.add(PathPatternRequestMatcher.pathPattern(method, path));
+                    log.warn("  | Skipping expansion due to previous error. Endpoint {} {} may not behave as expected.",
+                            endpoint.getMethod(), endpoint.getPath());
+                    continue;
+                }
+
+                log.info("  | Environment expansion yields absolute path: {}", path);
+
+                RequestMatcher matcher = PathPatternRequestMatcher.pathPattern(method, path);
+                publicEndpintMatchers.add(matcher);
+
+                log.info("  | Adding pattern {} {}", method.name(), path);
+            }
+            publicEndpointsMap = publicEndpintMatchers.toArray(RequestMatcher[]::new);
+
+            log.info("Marked {} endpoints as unauthenticated/public.", publicEndpointsMap.length);
+        } catch (Throwable e) {
+            log.error("Critical error in intialization routine for the application security configuration; uncaught exception {}", e);
+            log.error("Security configuration cannot boot, error is unrecoverable. Exiting now.");
+            System.exit(1);
         }
-        publicEndpointsMap = publicEndpintMatchers.toArray(publicEndpointsMap);
     }
 
     @Bean
