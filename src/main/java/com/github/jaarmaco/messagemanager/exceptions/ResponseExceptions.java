@@ -10,6 +10,10 @@ public abstract class ResponseExceptions {
         return ForbiddenResponseException.forDetail(detail);
     }
 
+    public static ForbiddenResponseException invalidUserCredentials() {
+        return forbidden("Invalid user credentials.");
+    }
+
     public static UnauthorizedResponseException unauthorized() {
         return UnauthorizedResponseException.get();
     }
