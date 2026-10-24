@@ -1,5 +1,6 @@
 package com.github.jaarmaco.messagemanager.properties;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -16,11 +17,11 @@ import lombok.Setter;
 @ConfigurationProperties("app.api")
 public class ApiConfigurationProperties {
 
-    private String baseUrl;
+    private String domainName = "localhost:8080";
     
-    private String apiPrefix = "/v1";
+    private String prefix = "/api/v1";
 
-    private List<Endpoint> publicEndpoints;
+    private List<Endpoint> publicEndpoints = new ArrayList<>();
 
     @Getter
     @Setter
