@@ -54,6 +54,10 @@ app:
         path: ${app.api.prefix}/actuator/echo
       - method: GET
         path: ${app.api.prefix}/actuator/forbidden
+      - method: POST
+        path: ${app.api.prefix}/auth/login
+      - method: POST
+        path: ${app.api.prefix}/auth/register
 
   jwt:
     secret: QW5vdGhlciBoYXBweSBsYW5kaW5nIC0gT2Jpd2FuIEtlbm9iaSAyMCBCQlkK 

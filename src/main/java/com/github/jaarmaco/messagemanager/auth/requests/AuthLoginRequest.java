@@ -1,8 +1,9 @@
 package com.github.jaarmaco.messagemanager.auth.requests;
 
+import java.util.UUID;
+
 public record AuthLoginRequest(
-    UserAuthenticationMethod method,
-    String user,
-    String credentials
+    UUID user,
+    String password
 ) {}
 
