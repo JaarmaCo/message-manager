@@ -52,6 +52,8 @@ app:
         path: ${app.api.prefix}/actuator/health
       - method: GET
         path: ${app.api.prefix}/actuator/echo
+      - method: GET
+        path: ${app.api.prefix}/actuator/forbidden
 
   jwt:
     secret: QW5vdGhlciBoYXBweSBsYW5kaW5nIC0gT2Jpd2FuIEtlbm9iaSAyMCBCQlkK 
