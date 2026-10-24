@@ -37,7 +37,11 @@ app:
   api:
     domain-name: localhost:8080
     prefix: /api/v1
-    public-endpoints: []
+    public-endpoints:
+      - method: GET
+        path: ${app.api.prefix}/actuator/health
+      - method: GET
+        path: ${app.api.prefix}/actuator/echo
 
   jwt:
     secret: QW5vdGhlciBoYXBweSBsYW5kaW5nIC0gT2Jpd2FuIEtlbm9iaSAyMCBCQlkK 
