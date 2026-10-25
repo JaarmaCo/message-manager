@@ -12,6 +12,7 @@ import static org.mockito.Mockito.any;
 
 import java.security.Principal;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +29,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import com.github.jaarmaco.messagemanager.auth.model.User;
+import com.github.jaarmaco.messagemanager.auth.model.UserRepository;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 
@@ -36,6 +40,9 @@ public class JwtAuthenticationFilterTest {
 
     @Mock
     private JwtService jwtService;
+
+    @Mock
+    private UserRepository userRepository;
 
     @InjectMocks
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -88,17 +95,24 @@ public class JwtAuthenticationFilterTest {
     @Test
     void authenticatesWhenBearerIsSet() throws Exception {
 
+        final var USER_ID = UUID.randomUUID();
+
         String mockJwt = "abc123";
         request.addHeader("Authorization", "Bearer " + mockJwt);
         
         Claims claims = Jwts
             .claims()
-            .subject("userId")
-            .add(JwtService.CLAIM_USER_ID, "userId")
+            .subject(USER_ID.toString())
+            .add(JwtService.CLAIM_USER_ID, USER_ID.toString())
             .build();
+
+        var user = User.fromIdAndPasswordDigest(USER_ID, "aaaa");
 
         when(jwtService.tryParseToken(mockJwt))
             .thenReturn(Optional.of(claims));
+
+        when(userRepository.findById(any()))
+            .thenReturn(Optional.of(user));
 
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
@@ -111,7 +125,7 @@ public class JwtAuthenticationFilterTest {
             .extracting(UsernamePasswordAuthenticationToken::getPrincipal)
             .asInstanceOf(type(Principal.class))
             .extracting(Principal::getName)
-            .isEqualTo("userId");
+            .isEqualTo(USER_ID.toString());
     
         verify(filterChain)
             .doFilter(request, response);

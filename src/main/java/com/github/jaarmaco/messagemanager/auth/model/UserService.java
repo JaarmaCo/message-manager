@@ -71,7 +71,7 @@ public class UserService {
                 return Result.exception(ResponseExceptions.forbidden("Invalid user credentials"));
             }
             return Result.doTry(() ->
-                    jwtService.generateTokenForUser(targetUser.getUserId()));
+                    jwtService.generateTokenForUser(targetUser));
         }
     } 
 }

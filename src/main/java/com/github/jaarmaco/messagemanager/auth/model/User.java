@@ -31,5 +31,12 @@ public class User {
     @Setter
     @Column(name = "user_password_digest", nullable = false)
     private String userPasswordDigest;
+    
+    public static User fromIdAndPasswordDigest(UUID userId, String userPasswordDigest) {
+        var user = new User();
+        user.userId = userId;
+        user.userPasswordDigest = userPasswordDigest;
+        return user;
+    }
 }
 
