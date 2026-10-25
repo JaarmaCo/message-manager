@@ -1,5 +1,6 @@
 package com.github.jaarmaco.messagemanager.auth.model;
 
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,15 +10,18 @@ import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.github.jaarmaco.messagemanager.lib.functional.Result;
 import com.github.jaarmaco.messagemanager.security.JwtService;
 import com.github.jaarmaco.messagemanager.security.UserPrincipal;
 
-@SpringBootTest
+@SpringJUnitConfig(UserServiceTest.TestConfig.class)
 public class UserServiceTest {
 
     @MockitoBean
@@ -31,6 +35,27 @@ public class UserServiceTest {
 
     @Autowired
     private UserService userService;
+    
+    @Configuration
+    static class TestConfig {
+
+        @Bean
+        PasswordEncoder passwordEncoder() {
+            return new BCryptPasswordEncoder();
+        }
+
+        @Bean
+        UserService userService(UserRepository userRepository,
+                                JwtService jwtService,
+                                PasswordEncoder passwordEncoder) {
+            return UserService
+                .builder()
+                .userRepository(userRepository)
+                .jwtService(jwtService)
+                .passwordEncoder(passwordEncoder)
+                .build();
+        }
+    }
 
     @Test
     void authenticationRejectsMismatchingPasswords() {
