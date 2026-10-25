@@ -3,7 +3,6 @@ package com.github.jaarmaco.messagemanager.auth.model;
 import java.security.Principal;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -11,20 +10,20 @@ import com.github.jaarmaco.messagemanager.exceptions.ResponseExceptions;
 import com.github.jaarmaco.messagemanager.lib.functional.Result;
 import com.github.jaarmaco.messagemanager.security.JwtService;
 
+import lombok.Builder;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 
 @Service
+@Builder
+@RequiredArgsConstructor
 public class UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Autowired
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     public Result<User> createUserWithPassword(String userPassword) {
         return Result.doTry(() -> {
