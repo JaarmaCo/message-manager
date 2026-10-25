@@ -19,6 +19,13 @@ import com.github.jaarmaco.messagemanager.auth.responses.AuthLoginResponse;
 import com.github.jaarmaco.messagemanager.auth.responses.AuthUserResponse;
 import com.github.jaarmaco.messagemanager.exceptions.ResponseExceptions;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
