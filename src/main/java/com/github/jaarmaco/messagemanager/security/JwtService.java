@@ -19,21 +19,22 @@ import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @EnableConfigurationProperties(JwtConfigurationProperties.class)
 public class JwtService {
 
     public static final String CLAIM_USER_ID = "uid";
     public static final int KEY_MIN_SIZE_BYTES = 32;
 
-    private final JwtConfigurationProperties jwtConfigurationProperties;
+    @Autowired
+    private JwtConfigurationProperties jwtConfigurationProperties;
 
     private SecretKey secretKey;
 

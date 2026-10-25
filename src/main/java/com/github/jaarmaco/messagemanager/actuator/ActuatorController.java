@@ -15,9 +15,11 @@ import com.github.jaarmaco.messagemanager.actuator.responses.ActuatorEchoRespons
 import com.github.jaarmaco.messagemanager.actuator.responses.ActuatorHealthResponse;
 import com.github.jaarmaco.messagemanager.exceptions.ResponseExceptions;
 
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@NoArgsConstructor
 @RestController
 @RequestMapping("${app.api.prefix}/actuator")
 public class ActuatorController {

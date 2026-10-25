@@ -1,6 +1,5 @@
 package com.github.jaarmaco.messagemanager.auth.model;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 
