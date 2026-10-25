@@ -10,7 +10,6 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Service;
 
 import com.github.jaarmaco.messagemanager.auth.model.User;
-import com.github.jaarmaco.messagemanager.exceptions.ResponseExceptions;
 import com.github.jaarmaco.messagemanager.properties.JwtConfigurationProperties;
 
 import io.jsonwebtoken.Claims;
@@ -18,19 +17,23 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
-import lombok.NonNull;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
+@Builder
+@AllArgsConstructor
+@RequiredArgsConstructor
 @EnableConfigurationProperties(JwtConfigurationProperties.class)
 public class JwtService {
 
     public static final String CLAIM_USER_ID = "uid";
     public static final int KEY_MIN_SIZE_BYTES = 32;
 
-    @Autowired
-    private JwtConfigurationProperties jwtConfigurationProperties;
+    private final JwtConfigurationProperties jwtConfigurationProperties;
 
     private SecretKey secretKey;
 

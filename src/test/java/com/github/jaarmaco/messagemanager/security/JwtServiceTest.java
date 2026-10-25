@@ -11,23 +11,42 @@ import javax.crypto.SecretKey;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
 import com.github.jaarmaco.messagemanager.auth.model.User;
+import com.github.jaarmaco.messagemanager.properties.JwtConfigurationProperties;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
-@SpringBootTest(
-    properties = {
-        "app.jwt.secret=VGhlcmUgYW5kIGJhY2sgYWdhaW4uIEEgSG9iYml0J3MgdGFsZSBieSBCaWxibyBCYWdnaW5zLgo=",
-        "app.jwt.expiration=86400000"
-    })
+@SpringJUnitConfig(JwtServiceTest.TestConfig.class)
 public class JwtServiceTest {
 
     @Autowired
     JwtService jwtService;
+
+    @Configuration
+    static class TestConfig {
+
+        @Bean
+        JwtConfigurationProperties jwtConfigurationProperties() {
+            return JwtConfigurationProperties
+                .builder()
+                .secret("VGhlcmUgYW5kIGJhY2sgYWdhaW4uIEEgSG9iYml0J3MgdGFsZSBieSBCaWxibyBCYWdnaW5zLgo=")
+                .expiration(86400000L)
+                .build();
+        }
+
+        @Bean
+        JwtService jwtService(JwtConfigurationProperties jwtConfigurationProperties) {
+            return JwtService
+                .builder()
+                .jwtConfigurationProperties(jwtConfigurationProperties)
+                .build();
+        }
+    }
 
     @Test
     void contextLoads() {}
