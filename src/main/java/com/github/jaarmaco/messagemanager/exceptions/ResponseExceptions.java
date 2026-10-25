@@ -2,6 +2,8 @@ package com.github.jaarmaco.messagemanager.exceptions;
 
 public abstract class ResponseExceptions {
 
+    public static String MESSAGE_INVALID_USER_CREDENTIALS = "Invalid user credentials.";
+
     public static ForbiddenResponseException forbidden() {
         return ForbiddenResponseException.get();
     }
@@ -11,7 +13,7 @@ public abstract class ResponseExceptions {
     }
 
     public static ForbiddenResponseException invalidUserCredentials() {
-        return forbidden("Invalid user credentials.");
+        return forbidden(MESSAGE_INVALID_USER_CREDENTIALS);
     }
 
     public static UnauthorizedResponseException unauthorized() {
