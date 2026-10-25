@@ -14,11 +14,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Import;
 
+import com.github.jaarmaco.messagemanager.auth.model.User;
+
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 
 @SpringBootTest(
-    classes = JwtServiceTest.Configuration.class,
     properties = {
         "app.jwt.secret=VGhlcmUgYW5kIGJhY2sgYWdhaW4uIEEgSG9iYml0J3MgdGFsZSBieSBCaWxibyBCYWdnaW5zLgo=",
         "app.jwt.expiration=86400000"
@@ -28,12 +29,6 @@ public class JwtServiceTest {
     @Autowired
     JwtService jwtService;
 
-    @TestConfiguration
-    @Import({
-        JwtService.class
-    })
-    static class Configuration {}
-
     @Test
     void contextLoads() {}
 
@@ -41,7 +36,7 @@ public class JwtServiceTest {
     void generateRejectsNullArguments() {
         
         assertThatThrownBy(() -> jwtService.generateTokenForUser(null))
-            .as("Passing null to generateTokenForUser(UUID) should fail with IllegalArgumentException")
+            .as("Passing null to generateTokenForUser(User) should fail with IllegalArgumentException")
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -65,8 +60,9 @@ public class JwtServiceTest {
     void generatedTokensCanBeParsed() {
 
         var userId = UUID.randomUUID();
-        
-        String jwt = jwtService.generateTokenForUser(userId);
+        var user = User.fromIdAndPasswordDigest(userId, "aaaa");
+
+        String jwt = jwtService.generateTokenForUser(user);
         
         assertThat(jwt)
             .isNotNull()

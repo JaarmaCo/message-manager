@@ -1,6 +1,7 @@
 package com.github.jaarmaco.messagemanager.lib.functional;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -15,6 +16,12 @@ public class Result<T> {
     private Throwable exception = null;
 
     private Result() {}
+
+    public void onSuccess(@NonNull Consumer<T> consumer) {
+        if (isSuccess()) {
+            consumer.accept(value);
+        }
+    }
 
     public void throwIfHasException() {
         if (exception instanceof RuntimeException rte) {
@@ -82,6 +89,10 @@ public class Result<T> {
         } catch (Throwable e) {
             return exception(e);
         }
+    }
+
+    public <R> Result<R> andThenFromOptional(@NonNull Function<T, Optional<R>> mapper) {
+        return andThen(it -> fromOptional(mapper.apply(it)));
     }
 
     public <R> Result<R> andThen(@NonNull Function<T, Result<R>> mapper) {

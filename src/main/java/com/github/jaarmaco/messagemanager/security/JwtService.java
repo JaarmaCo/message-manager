@@ -2,7 +2,6 @@ package com.github.jaarmaco.messagemanager.security;
 
 import java.util.Date;
 import java.util.Optional;
-import java.util.UUID;
 
 import javax.crypto.SecretKey;
 
@@ -10,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 
+import com.github.jaarmaco.messagemanager.auth.model.User;
+import com.github.jaarmaco.messagemanager.exceptions.ResponseExceptions;
 import com.github.jaarmaco.messagemanager.properties.JwtConfigurationProperties;
 
 import io.jsonwebtoken.Claims;
@@ -17,6 +18,7 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -62,13 +64,13 @@ public class JwtService {
         log.info("JWT provider initialized successfully.");
     }
 
-    public String generateTokenForUser(UUID userId) {
+    public String generateTokenForUser(User user) {
 
-        if (userId == null) {
-            throw new IllegalArgumentException("User id cannot be null.");
+        if (user == null || user.getUserId() == null) {
+            throw new IllegalArgumentException("User may not be null");
         }
 
-        String idStr = userId.toString();
+        String idStr = user.getUserId().toString();
         
         var now = new Date();
         var expiration = new Date(now.getTime() + jwtConfigurationProperties.getExpiration()); 
