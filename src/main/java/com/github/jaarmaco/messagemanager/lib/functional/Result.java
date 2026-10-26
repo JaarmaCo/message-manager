@@ -31,6 +31,8 @@ public class Result<T> {
         }
     }
 
+    public void ignoringErrors() {}
+
     public void requireNonEmpty() {
         if (isEmpty()) {
             throw new IllegalStateException("Empty result");

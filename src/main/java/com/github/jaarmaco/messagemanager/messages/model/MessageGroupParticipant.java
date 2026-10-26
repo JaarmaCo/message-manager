@@ -7,6 +7,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import com.github.jaarmaco.messagemanager.auth.model.User;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -24,18 +25,30 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MessageGroupParticipant { 
-    
-    @Getter
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id")
-    private MessageGroup messageGroup;
 
-    @Getter
-    @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Key {
+
+        @Getter
+        @Setter
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "group_id")
+        private MessageGroup messageGroup;
+
+        @Getter
+        @Setter
+        @ManyToOne(fetch = FetchType.LAZY)
+        @JoinColumn(name = "user_id")
+        private User user;
+    }
+
+    public static Key key(MessageGroup group, User user) {
+        return new Key(group, user);
+    }
+
+    @EmbeddedId
+    private Key key;
 
     @Getter
     @Setter
