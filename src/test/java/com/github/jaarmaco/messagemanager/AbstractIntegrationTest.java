@@ -5,7 +5,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
 import org.testcontainers.postgresql.PostgreSQLContainer;
 
-@SpringBootTest
+@SpringBootTest(properties = {
+    "logging.level.com.github.jaarmaco.messagemanager=ERROR" 
+})
 public abstract class AbstractIntegrationTest {
 
     @ServiceConnection

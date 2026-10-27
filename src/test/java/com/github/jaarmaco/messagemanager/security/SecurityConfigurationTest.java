@@ -11,26 +11,17 @@ import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration;
-import org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
-import org.springframework.context.annotation.Import;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import com.github.jaarmaco.messagemanager.AbstractIntegrationTest;
 import com.github.jaarmaco.messagemanager.actuator.responses.ActuatorHealthResponse;
 import com.github.jaarmaco.messagemanager.auth.model.User;
 import com.github.jaarmaco.messagemanager.auth.model.UserRepository;
 
-@SpringBootTest(properties = {
-    "logging.level.com.github.jaarmaco.messagemanager=ERROR"
-})
 @AutoConfigureMockMvc
-@Import(SecurityConfigurationTest.TestConfig.class)
-public class SecurityConfigurationTest {
+public class SecurityConfigurationTest extends AbstractIntegrationTest {
 
     @Value("${app.api.prefix}")
     private String prefix;
@@ -44,13 +35,6 @@ public class SecurityConfigurationTest {
     @MockitoBean
     private UserRepository userRepository;
    
-    @TestConfiguration
-    @EnableAutoConfiguration(exclude = {
-        HibernateJpaAutoConfiguration.class,
-        DataSourceAutoConfiguration.class
-    })
-    static class TestConfig {}
-
     @Test
     void healthCheckPasses() throws Exception {
         mockMvc.perform(get(prefix + "/actuator/health"))
