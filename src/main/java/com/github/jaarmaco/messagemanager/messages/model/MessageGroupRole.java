@@ -75,8 +75,16 @@ public class MessageGroupRole {
             .build();
     }
 
+    public static MessageGroupRole banned() {
+        return MessageGroupRole
+            .builder()
+            .name("banned")
+            .level(0)
+            .build();
+    }
+
     public static List<MessageGroupRole> values() {
-        return List.of(admin(), owner(), participant(), guest());
+        return List.of(admin(), owner(), participant(), guest(), banned());
     }
 }
 

@@ -8,14 +8,31 @@ import java.util.function.Supplier;
 
 import org.springframework.util.function.ThrowingSupplier;
 
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
+@EqualsAndHashCode
 public class Result<T> {
 
     private T value = null;
     private Throwable exception = null;
 
     private Result() {}
+
+    @Override
+    public String toString() {
+
+        if (value != null) {
+            return String.format("Result.success(%s)", value);
+        }
+
+        if (exception != null) {
+            return String.format("Result.exception(%s)",
+                    exception.getClass().getSimpleName());
+        }
+
+        return "Result.empty()";
+    }
 
     public void onSuccess(@NonNull Consumer<T> consumer) {
         if (isSuccess()) {
