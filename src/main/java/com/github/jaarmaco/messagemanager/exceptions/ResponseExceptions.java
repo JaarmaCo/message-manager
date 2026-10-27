@@ -8,6 +8,8 @@ public abstract class ResponseExceptions {
 
     public static String MESSAGE_GROUP_NOT_FOUND = "Message group does not exist.";
 
+    public static String MESSAGE_NOT_FOUND = "There is no message associated with the provided id.";
+
     public static String MEMBERSHIP_REQUIRED = "User is not a member of this message group.";
 
     public static String ROLE_REQUIRED = "User's role in this group does not permit this operation.";
@@ -58,6 +60,10 @@ public abstract class ResponseExceptions {
 
     public static NotFoundResponseException messageGroupNotFound() {
         return notFound(MESSAGE_GROUP_NOT_FOUND);
+    }
+
+    public static NotFoundResponseException messageNotFound() {
+        return notFound(MESSAGE_NOT_FOUND);
     }
 
     public static BadRequestResponseException badRequest() {

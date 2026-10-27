@@ -7,6 +7,16 @@ actions:
   - target: $
     update:
       components:
+        
+        securitySchemes:
+          BearerAuth:
+            type: http
+            scheme: bearer
+            bearerFormat: JWT
+    
+        security:
+          - BearerAuth: []
+
         schemas:
           ProblemDetail:
             type: object
@@ -30,10 +40,10 @@ actions:
             required:
               - title
               - status
-
   - target: "$.paths['/api/v1/auth/login'].post"
     update:
       summary: Log in a user.
+      security: []
       description: |
         Logs in a user using a supported authentication method. On success,
         the response contains an id for the authenticated user, as well as a
@@ -55,6 +65,8 @@ actions:
   - target: "$.paths['/api/v1/auth/whoami'].get"
     update:
       sumary: Get information about the authenticated user.
+      security:
+        - BearerAuth: []
       description: |
         Authenticated endpoint that returns the ID and miscellaneous
         information about the authenticated user.
@@ -75,6 +87,7 @@ actions:
   - target: "$.paths['/api/v1/actuator/health'].get"
     update:
       summary: Test the responsiveness of the application.
+      security: []
       description: |
         This is an actuator endpoint that will respond with always respond
         with 200 OK.
@@ -92,6 +105,7 @@ actions:
   - target: "$.paths['/api/v1/actuator/echo'].post"
     update:
       summary: Test whether the application can accept POST requests.
+      security: []
       description: |
         This endpoint will respond with the same message it was provided in the
         request. The purpose of this endpoint is to verify that the application
@@ -107,6 +121,8 @@ actions:
   - target: "$.paths['/api/v1/actuator/authorized'].get"
     update:
       summary: Test whether authorized requests function properly.
+      security:
+        - BearerAuth: []
       description: |
         This endpoint is for testing purposes only and will not be exposed in
         release builds.
@@ -138,6 +154,7 @@ actions:
   - target: "$.paths['/api/v1/actuator/forbidden'].get"
     update:
       summary: Test whether request denial works properly.
+      security: []
       description: |
         This endpoint will always respond with 403 FORBIDDEN and not to be used
         outside of test environments.
@@ -150,5 +167,110 @@ actions:
               schema:
                 $ref: "#/components/schemas/ProblemDetail"
           description: Request is always denied.
+
+  - target: "$.paths['/api/v1/groups/{groupId}/post'].post.responses['200']"
+    remove: true
+
+  - target: "$.paths['/api/v1/groups/{groupId}/post'].post"
+    update:
+      summary: Send a simple text message to a messaging group.
+      security:
+        - BearerAuth: []
+      description: |
+        Given that a user is a member with sufficient permissions, this endpoint will
+        emit a new message into the group pointed to by the given identifier.
+
+        This endpoint will then respond with 201 CREATED (Location pointing to the new
+        message) with no body.
+      responses:
+        '201':
+          description: Message was sent and is available at the given location. Body is empty.
+        '401': 
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing required authorization.
+        '403': 
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Invalid credentials, or the user does not have permission to post to this group.
+        '404': 
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Message group does not exist.
+
+  - target: "$.paths['/api/v1/groups/{groupId}/messages'].get"
+    update:
+      summary: Gets messages posted to a given group.
+      security:
+        - BearerAuth: []
+      description: |
+        Given that the user has permissions to read messages from this group, this endpoint will
+        return a paginated list of all messages sent so far.
+
+        The returned results is ordered so that the most recent messages are returned first.
+      responses:
+        '200':
+          description: Returns the requested page of messages.
+        '400': 
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: |
+            Invalid query parameters. The request expects pageNumber to be a positive integer, and
+            for pageSize (if specified) to be a positive integer less than the maximum page size (1000).
+        '401': 
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing required authorization.
+        '403': 
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: User does not have permission to read messages from this group.
+
+
+  - target: "$.paths['/api/v1/messages/{messageId}'].get"
+    update:
+      summary: Retrieve a specific message by it's id.
+      security:
+        - BearerAuth: []
+      description: |
+        This endpoint can be used to get a specific message. Only authorized users with read perissions
+        in the group the messages was posted in have access to reading messages.
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MessageGetResponse"
+          description: Returns the contents and metadata of the given message.
+        '401': 
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: Missing required authorization.
+        '403': 
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: User is not a member of the group this message was posted in, or they lack permissions.
+        '404': 
+          content:
+            application/problem+json:
+              schema:
+                $ref: "#/components/schemas/ProblemDetail"
+          description: The given id does not point to any known message.
 
 
