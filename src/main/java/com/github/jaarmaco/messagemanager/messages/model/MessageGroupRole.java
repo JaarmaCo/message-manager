@@ -20,7 +20,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "message_group_role")
+@Table(name = "message_group_roles")
 public class MessageGroupRole {
 
     @Id

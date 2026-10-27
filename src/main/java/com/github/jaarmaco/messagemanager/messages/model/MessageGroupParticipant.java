@@ -15,6 +15,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,8 +25,10 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class MessageGroupParticipant { 
 
+    @EqualsAndHashCode
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Key {
@@ -47,6 +50,7 @@ public class MessageGroupParticipant {
         return new Key(group, user);
     }
 
+    @EqualsAndHashCode.Include
     @EmbeddedId
     private Key key;
 

@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,12 +24,14 @@ import lombok.Setter;
 @Table(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class User {
 
     @Id
     @Getter
     @Column(name = "user_id")
     @GeneratedValue(strategy = GenerationType.UUID)
+    @EqualsAndHashCode.Include
     private UUID userId;
 
     @Getter
