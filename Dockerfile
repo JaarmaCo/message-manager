@@ -6,7 +6,7 @@ COPY pom.xml .
 RUN mvn -B -q dependency:resolve dependency:resolve-plugins
 
 COPY src ./src
-RUN mvn -B -q package -Dmaven.test.skip=true -Dspring.jpa.hibernate.ddl-auto=none
+RUN mvn -B -q package -Dmaven.test.skip=true 
 
 FROM eclipse-temurin:25-jre-alpine
 
