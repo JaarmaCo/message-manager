@@ -8,7 +8,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.github.jaarmaco.messagemanager.auth.model.User;
-import com.github.jaarmaco.messagemanager.auth.model.UserService;
 import com.github.jaarmaco.messagemanager.exceptions.ResponseExceptions;
 import com.github.jaarmaco.messagemanager.lib.functional.Result;
 import com.github.jaarmaco.messagemanager.network.NetworkService;
@@ -38,11 +37,11 @@ public class MessageService {
     private NetworkService networkService;
 
     public boolean rolePermitsPostingMessages(MessageGroupRole role) {
-        return role != null && role.getName() != null;
+        return role != null && role.getLevel() != null && role.getLevel() >= 2;
     }
 
     public boolean rolePermitsReadingMessages(MessageGroupRole role) {
-        return role != null && role.getName() != null;
+        return role != null && role.getLevel() != null && role.getLevel() >= 1;
     }
 
     @Transactional
