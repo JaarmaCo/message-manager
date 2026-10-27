@@ -106,5 +106,31 @@ public class MessageService {
             return messages;
         });
     }
+
+    @Transactional
+    public Result<Message> readMessage(@NonNull User self,
+                                       @NonNull UUID messageId) {
+        return Result.doTry(() -> {
+
+            Message message = messageRepository
+                .findById(messageId)
+                .orElseThrow(ResponseExceptions::messageNotFound);
+
+            MessageGroup messageGroup = message.getGroup();
+            if (messageGroup == null) {
+                throw ResponseExceptions.membershipRequired();
+            }
+
+            MessageGroupParticipant participant = messageGroupParticipantRepository
+                .findById(MessageGroupParticipant.key(messageGroup, self))
+                .orElseThrow(ResponseExceptions::membershipRequired);
+
+            if (!rolePermitsReadingMessages(participant.getRole())) {
+                throw ResponseExceptions.roleRequired();
+            }
+
+            return message;
+        });
+    }
 }
 
